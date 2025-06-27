@@ -1,48 +1,56 @@
 const template = document.getElementById('template');
 
 const BlogEntry = class {
-  constructor(title, content, id) {
+  constructor(title, content, dateString = new Date().toISOString().slice(0, 10)) {
     this.title = title;
     this.content = content;
-    this.id = id;
+    this.dateString = dateString; // 2025-06-27
   }
 }
 
 const BlogLog = class {
-  constructor (arrayLog = []) {
+  constructor(arrayLog = []) {
     this.blogList = arrayLog;
   }
-}
-
-
-const testArray = [0,0,1,1,3,3,3,3,3,6,7,8];
-
-const findLastIndex = (arrayInput, x) => {
-  let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // will return -1 if not found.
-  while (startIndex <= endIndex) {
-    let midIndex = Math.floor((startIndex + endIndex) / 2);
-    if (x === arrayInput[midIndex]) {
-      returnIndex = midIndex;
-      startIndex = midIndex + 1;
-    } else if (x < arrayInput[midIndex]) {
-      endIndex = midIndex - 1;
+  /**
+   * @param BlogEntry instance, blogEntry 
+   * @param [{}] array of objects of {blogEntry: blogEntry, logNumber: number}
+   * Takes instance of blogEntry and sorts into place in blogList.
+   * If there are no entries that date, then indexArray[0] === -1, and logNumber set to 1.
+   * If there are other entries for that date, then logNumber = the last logNumber+1.
+   */
+  addEntry = (blogEntry, arrayInput = this.blogList) => {
+    const indexArray = findLastIndexAndInsertIndex(blogEntry.date);
+    if (indexArray[0] === -1) {
+      this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: 1})
     } else {
-      startIndex = midIndex + 1;
+      this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: blogEntry[indexArray[0]].logNumber + 1})
+      // If this is weird, try storing indexArray[1].logNumber.  .splice shouldn't be an issue until after it's run.
+      // Test for multiple blogEntries on a single date, multiple dates, etc.  Check log output too.
     }
   }
-  return [returnIndex, endIndex, startIndex];
+  deleteEntry = (arrayIndex) => {
+    this.blogList.splice(arrayIndex, 1);
+  }
+  findLastIndexAndInsertIndex = (dateString, arrayInput = this.blogList) => {
+    let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex = -1 if not found.
+    while (startIndex <= endIndex) {
+      let midIndex = Math.floor((startIndex + endIndex) / 2);
+      if (dateString === arrayInput[midIndex].blogEntry.dateString) {
+        returnIndex = midIndex;
+        startIndex = midIndex + 1;
+      } else if (dateString < arrayInput[midIndex].blogEntry.dateString) {
+        endIndex = midIndex - 1;
+      } else {
+        startIndex = midIndex + 1;
+      }
+    }
+    return [returnIndex, startIndex];
+  }
+  displayBlogList = () => {
+
+  }
 }
-
-console.log(findLastIndex(testArray, 1)) // insert at startIndex.  If -1 then date not found and start at 0.
-// If not -1 then lift the entry number off returnIndex, and stick a new item in.
-console.log(findLastIndex(testArray, 2));
-
-console.log(findLastIndex(testArray, 9));
-testArray.splice(4, 0, "rabbit");
-
-console.log(testArray);
-
-const today = new Date().toISOString().slice(0,10); // 2025-06-27
 
 
 // onSubmit sends form data to array of objects.
