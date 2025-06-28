@@ -1,4 +1,10 @@
-const template = document.getElementById('template');
+const container = document.getElementById('container');
+const templateBlog = document.getElementById('template-blog');
+const formEnterBlog = document.getElementById('form-enter-blog');
+const inputBlogTitle = document.getElementById('input-blog-title');
+const inputBlogTitleError = document.getElementById('input-blog-title-error');
+const inputBlogContent = document.getElementById('input-blog-content');
+const inputBlogContentError = document.getElementById('input-blog-content-error');
 
 const BlogEntry = class {
   constructor(title, content, dateString = new Date().toISOString().slice(0, 10)) {
@@ -47,10 +53,42 @@ const BlogLog = class {
     }
     return [returnIndex, startIndex];
   }
-  displayBlogList = () => {
+  displayBlogList = (htmlElement) => {
+    const clonedBlogEntry = template.cloneNode(true);
+    clonedBlogEntry.style.display = 'block';
 
+    //Clone.  Assign datasetId based on array index, to pass to deleteEntry.
   }
 }
+
+inputBlogTitle.addEventListener('input', (event) => {
+  if (inputBlogTitle.validity.valueMissing) {
+    inputBlogTitle.setCustomValidity(`Please enter a blog title.`);
+  } else {
+    inputBlogTitle.setCustomValidity(``);
+  }
+  inputBlogTitleError.textContent = inputBlogTitleError.validationMessage;
+});
+
+inputBlogContent.addEventListener('input', (event) => {
+  if (inputBlogContent.validity.valueMissing) {
+    inputBlogContent.setCustomValidity('Please enter blog content');
+  } else {
+    inputBlogContent.setCustomValidity('');
+  }
+  inputBlogContentError.textContent = inputBlogContentError.validationMessage;
+});
+
+formEnterBlog.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const title = inputBlogTitle.value;
+
+  const content = inputBlogContent.value;
+  
+
+
+
+});
 
 
 // onSubmit sends form data to array of objects.
@@ -65,7 +103,15 @@ const BlogLog = class {
 // How do I maintain . . . well, I just find the last index with that date, get its log number, then add 1.
 
 
-
+// Stick in something to jump navigation from current blog to form input to back.
+// Or would it be better to hide the existing element and reveal the current form?
+// Well, hiding creates 2-3 times the element (for form and add).
+// So how many times will they really use that?
+// When specifically do I render? If I edit an element, I don't need to do much, just .replace
+// If I *delete* an element then I need to . . . re-render the whole list?  Maybe I just delete from data
+// and delete the element, and leave it at that. CSS styling handles change in look.
+// Well really, do I even need to render the whole list at all?  I have to populate the list on initialization,
+// sure.  
 
 
 // cloneButton.addEventListener('click', () => {

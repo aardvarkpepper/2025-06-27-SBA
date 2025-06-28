@@ -1,31 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Personal Blog Platform</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
-<body>
+
+<body id="container">
   <h1>
     Interactive Personal Blog Platform
   </h1>
   <section>
-    <form id="template-blog-data-entry">
-      <label for="input-post-title">Post Title</label>
+    <form id="form-enter-blog">
+      <label for="input-blog-title">Blog Title</label>
       <br>
-      <input type="text" required>
+      <input type="text" id="input-blog-title" required>
       <br>
-      <label for="input-post-content">Post Content</label>
+      <span id="input-blog-title-error"></span>
       <br>
-      <textarea rows="5" cols="66" placeholder="Click and drag lower right corner to resize."></textarea>
+      <label for="input-blog-content">Blog Content</label>
+      <br>
+      <textarea id="input-blog-content" rows="5" cols="66"
+        placeholder="Click and drag lower right corner to resize."></textarea>
+      <br>
+      <span id="input-blog-content-error"></span>
       <br>
       <button id="button-submit-blog">Submit Blog Entry</button>
     </form>
   </section>
-  <section id="template" class="card" style="display: none;">
-    <h2></h2>
-  </section>
+  <div id="template-blog">
+    <section style="display: none;" class="blog-entry">
+      <h2></h2>
+      <p></p>
+      <button>Edit</button>
+      <button>Delete</button>
+    </section>
+    <section style="display: none;" class="blog-edit">
+    <form>
+      <label>Post Title</label>
+      <br>
+      <input type="text" required>
+      <br>
+      <span></span>
+      <br>
+      <label>Post Content</label>
+      <br>
+      <textarea rows="5" cols="66"
+        placeholder="Click and drag lower right corner to resize."></textarea>
+      <br>
+      <span></span>
+      <br>
+      <button class="button-edit-blog">Submit Blog Entry</button>
+    </form>
+    </section>
+  </div>
   <script src="./script.js"></script>
 </body>
+
 </html>
