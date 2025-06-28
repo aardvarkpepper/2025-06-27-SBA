@@ -137,8 +137,60 @@ container.addEventListener('click', (event) => {
     // button to section, section to containing div;
     blogLog.deleteEntry(dateString, logNumber, blogContainer);
   }
+  if (event.target.classList.contains('button-edit-blog')) {
+    // querySelector also vulnerable to document changes, though perhaps less so.
+    const blogContainer = event.target.parentElement.parentElement;
 
+    const blogSection = event.target.parentElement;
+    const formSection = blogContainer.children[1];
+    const formEdit = formSection.children[0];
+
+    const blogTitle = blogSection.children[0].textContent;
+    const blogContent = blogSection.children[1].textContent;
+
+    const formTitle = formEdit.children[2];
+    const formTitleError = formEdit.children[4];
+    const formContent = formEdit.children[8];
+    const formContentError = formEdit.children[10];
+    const formButton = formEdit.children[12];
+
+    formTitle.value= blogTitle;
+    formContent.value = blogContent;
+    blogSection.style.display = 'none';
+    formSection.style.display = 'block';
+  }
+  /**
+<div id="template-blog">
+    <section style="display: none;" class="blog-entry">
+      <h2></h2>
+      <p></p>
+      <button class="button-edit-blog">Edit</button>
+      <button class="button-delete-blog">Delete</button>
+    </section>
+    <section style="display: none;" class="blog-edit">
+      <form>
+        <label>Post Title</label>
+        <br>
+        <input type="text" required>
+        <br>
+        <span></span>
+        <br>
+        <label>Post Content</label>
+        <br>
+        <textarea rows="5" cols="66" placeholder="Click and drag lower right corner to resize."></textarea>
+        <br>
+        <span></span>
+        <br>
+        <button class="button-submit-edit-blog">Submit Blog Entry</button>
+      </form>
+    </section>
+  </div>
+    blogSection.style.display = 'none';
+    formSection.style.display = 'block';
+
+   */
 });
+// container.addEventListener('click' ...)
 
 // Top of page is submit blog entry with validation methods.
 // Submitting prepends or whatever blog to first element of list in html as it's reverse chronological order
