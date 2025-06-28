@@ -26,16 +26,27 @@ const BlogLog = class {
    * If there are other entries for that date, then logNumber = the last logNumber+1.
    */
   addEntry = (blogEntry, arrayInput = this.blogList) => {
-    const indexArray = findLastIndexAndInsertIndex(blogEntry.date);
+    console.log('aE triggered with ');
+    const indexArray = this.findLastIndexAndInsertIndex(blogEntry.dateString);
     if (indexArray[0] === -1) {
       this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: 1})
     } else {
-      this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: blogEntry[indexArray[0]].logNumber + 1})
+      console.log(`aeElse, with ${JSON.stringify(indexArray)} logNumber ${(this.blogList[indexArray[0]].logNumber) + 1}`);
+      this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: (this.blogList[indexArray[0]].logNumber) + 1})
       // If this is weird, try storing indexArray[1].logNumber.  .splice shouldn't be an issue until after it's run.
       // Test for multiple blogEntries on a single date, multiple dates, etc.  Check log output too.
     }
     const clonedBlogEntry = templateBlog.cloneNode(true);
-    clonedBlogEntry.style.display = 'block';
+    const clonedBlogSection = clonedBlogEntry.children[0]; // hardcoding a index 0 reference is not dynamic.
+    const cBSTitle = clonedBlogSection.children[0];
+    const cBSContent = clonedBlogSection.children[1];
+
+    cBSTitle.textContent = blogEntry.title;
+    cBSContent.textContent = blogEntry.content;
+
+    clonedBlogSection.style.display = 'block';
+
+    container.insertBefore(clonedBlogEntry, container.children[2]); // again, hardcoding reference.
   }
   editEntry = () => {}
   deleteEntry = (arrayIndex) => {
@@ -86,15 +97,14 @@ const addValueMissingListenerToHTMLElement = (htmlElement, errorMessage, htmlEle
 addValueMissingListenerToHTMLElement(inputBlogTitle, 'Please enter a blog title', inputBlogTitleError);
 addValueMissingListenerToHTMLElement(inputBlogContent, 'Please enter blog content', inputBlogContentError);
 
+const blogLog = new BlogLog();
+
 formEnterBlog.addEventListener('submit', (event) => {
   event.preventDefault();
   const title = inputBlogTitle.value;
-
   const content = inputBlogContent.value;
-  
-
-
-
+  let blogEntry = new BlogEntry(title, content);
+  blogLog.addEntry(blogEntry);
 });
 
 // Top of page is submit blog entry with validation methods.
@@ -113,10 +123,3 @@ formEnterBlog.addEventListener('submit', (event) => {
 // and delete the element, and leave it at that. CSS styling handles change in look.
 // Well really, do I even need to render the whole list at all?  I have to populate the list on initialization,
 // sure.  
-
-
-// cloneButton.addEventListener('click', () => {
-// const clonedCard = template.cloneNode(true); // Deep clone
-// clonedCard.style.display = 'block';
-// container.appendChild(clonedCard);
-// });
