@@ -35,6 +35,7 @@ const BlogLog = class {
       // Test for multiple blogEntries on a single date, multiple dates, etc.  Check log output too.
     }
   }
+  editEntry = () => {}
   deleteEntry = (arrayIndex) => {
     this.blogList.splice(arrayIndex, 1);
   }
@@ -53,8 +54,12 @@ const BlogLog = class {
     }
     return [returnIndex, startIndex];
   }
+  // functions add render, switch render with edit, delete render then nth-child takes over.
+  // The data functions are already handled.
+  // Should the changing of renders be considered separate functions?
+  // . . . no, because they're never called independently.
   displayBlogList = (htmlElement) => {
-    const clonedBlogEntry = template.cloneNode(true);
+    const clonedBlogEntry = templateBlog.cloneNode(true);
     clonedBlogEntry.style.display = 'block';
 
     //Clone.  Assign datasetId based on array index, to pass to deleteEntry.
