@@ -28,15 +28,20 @@ const BlogLog = class {
   addEntry = (blogEntry, arrayInput = this.blogList) => {
     console.log('aE triggered with ');
     const indexArray = this.findLastIndexAndInsertIndex(blogEntry.dateString);
+    let logNumber = null;
     if (indexArray[0] === -1) {
-      this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: 1})
+      logNumber = 1;
+      this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: logNumber})
     } else {
+      logNumber = `${(this.blogList[indexArray[0]].logNumber) + 1}` // also casts into string.
       console.log(`aeElse, with ${JSON.stringify(indexArray)} logNumber ${(this.blogList[indexArray[0]].logNumber) + 1}`);
       this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: (this.blogList[indexArray[0]].logNumber) + 1})
       // If this is weird, try storing indexArray[1].logNumber.  .splice shouldn't be an issue until after it's run.
       // Test for multiple blogEntries on a single date, multiple dates, etc.  Check log output too.
     }
     const clonedBlogEntry = templateBlog.cloneNode(true);
+    clonedBlogEntry.dataset.id=`${blogEntry.dateString}-${logNumber}`; 
+    // in HTML, data-id="1" is manifestation of javascript htmlElement.dataset.id="3";
     const clonedBlogSection = clonedBlogEntry.children[0]; // hardcoding a index 0 reference is not dynamic.
     const cBSTitle = clonedBlogSection.children[0];
     const cBSContent = clonedBlogSection.children[1];
