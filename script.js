@@ -61,23 +61,20 @@ const BlogLog = class {
   }
 }
 
-inputBlogTitle.addEventListener('input', (event) => {
-  if (inputBlogTitle.validity.valueMissing) {
-    inputBlogTitle.setCustomValidity(`Please enter a blog title.`);
-  } else {
-    inputBlogTitle.setCustomValidity(``);
-  }
-  inputBlogTitleError.textContent = inputBlogTitleError.validationMessage;
-});
+const addListenerToHTMLElement = (htmlElement, errorMessage, htmlElementOutput) => {
+  htmlElement.addEventListener('input', (event) => {
+    if (htmlElement.validity.valueMissing) {
+      htmlElement.setCustomValidity(`${errorMessage}`)
+    } else {
+      htmlElement.setCustomValidity(``);
+    }
+    htmlElementOutput.textContent = htmlElement.validationMessage;
+  });
+}
 
-inputBlogContent.addEventListener('input', (event) => {
-  if (inputBlogContent.validity.valueMissing) {
-    inputBlogContent.setCustomValidity('Please enter blog content');
-  } else {
-    inputBlogContent.setCustomValidity('');
-  }
-  inputBlogContentError.textContent = inputBlogContentError.validationMessage;
-});
+addListenerToHTMLElement(inputBlogTitle, 'Please enter a blog title', inputBlogTitleError);
+addListenerToHTMLElement(inputBlogContent, 'Please enter blog content', inputBlogContentError);
+
 
 formEnterBlog.addEventListener('submit', (event) => {
   event.preventDefault();
