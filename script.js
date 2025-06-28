@@ -26,7 +26,7 @@ const BlogLog = class {
    * If there are other entries for that date, then logNumber = the last logNumber+1.
    */
   addEntry = (blogEntry, arrayInput = this.blogList) => {
-    console.log('aE triggered with ');
+    // note:  There should be some limit on the number of added entries per page.  Displaying 200 entries is a lot.
     const indexArray = this.findLastIndexAndInsertIndex(blogEntry.dateString);
     let logNumber = null;
     if (indexArray[0] === -1) {
@@ -53,13 +53,12 @@ const BlogLog = class {
 
     container.insertBefore(clonedBlogEntry, container.children[2]); // again, hardcoding reference.
   }
-  editEntry = () => {}
-  deleteEntry = (arrayIndex) => {
-    this.blogList.splice(arrayIndex, 1); // correction, this must rely on unique date/log -based ID.
-    // After all, if an element is removed in the middle then all the old IDs are going to be out of date.
-    // Switching to a "display one element remove one element" instead of full render of list each time
-    // means that index numbers CAN be duplicated
-    
+  editEntry = () => {} // 
+  deleteEntry = (dateString, logNumber, htmlElement) => {
+    console.log(`dE with ${dateString}, ${logNumber}`);
+    const arrayIndex = this.findIndex(dateString, logNumber);
+    this.blogList.splice(arrayIndex, 1);
+    htmlElement.remove();
   }
   findLastIndexAndInsertIndex = (dateString, arrayInput = this.blogList) => {
     let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex = -1 if not found.
@@ -76,10 +75,24 @@ const BlogLog = class {
     }
     return [returnIndex, startIndex];
   }
+  findIndex = (dateString, logNumber, arrayInput = this.blogList) => {
+    logNumber = Number(logNumber);
+    let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex -1 if not found.  But that should never happen as this is only intended to be invoked on an existing element.
+    // Also, dateString and logNumber together should constitute a unique identifier.
+    while (startIndex <= endIndex) {
+      let midIndex = Math.floor((startIndex + endIndex) / 2);
+      if (dateString === arrayInput[midIndex].blogEntry.dateString && Number(arrayInput[midIndex].logNumber) === logNumber) {
+        returnIndex = midIndex;
+      } else if (dateString < arrayInput[midIndex].blogEntry.dateString || (dateString <= arrayInput[midIndex].blogEntry.dateString && Number(arrayInput[midIndex].logNumber)) < logNumber) {
+        endIndex = midIndex + 1;
+      } else {
+        startIndex = midIndex + 1;
+      }
+      return returnIndex;
+    } 
+  }
 
   displayBlogList = (htmlElement) => {
-    const clonedBlogEntry = templateBlog.cloneNode(true);
-    clonedBlogEntry.style.display = 'block';
 
     //Clone.  Assign datasetId based on array index, to pass to deleteEntry.
     // Remember, data array is most recent last, but render is most recent first.
@@ -110,6 +123,21 @@ formEnterBlog.addEventListener('submit', (event) => {
   const content = inputBlogContent.value;
   let blogEntry = new BlogEntry(title, content);
   blogLog.addEntry(blogEntry);
+  inputBlogTitle.value = "";
+  inputBlogContent.value = "";
+});
+
+container.addEventListener('click', (event) => {
+  if (event.target.classList.contains('button-delete-blog')) {
+    const blogContainer = event.target.parentElement.parentElement;
+    const targetId = blogContainer.dataset.id;
+    const dateString = targetId.slice(0, 10);
+    const logNumber = targetId.slice(11);
+    console.log(`caEL triggered.  ${dateString}, ${logNumber}`); // logNumber is a string; this is not working correctly.
+    // button to section, section to containing div;
+    blogLog.deleteEntry(dateString, logNumber, blogContainer);
+  }
+
 });
 
 // Top of page is submit blog entry with validation methods.
