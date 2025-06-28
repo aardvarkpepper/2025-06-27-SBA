@@ -34,10 +34,16 @@ const BlogLog = class {
       // If this is weird, try storing indexArray[1].logNumber.  .splice shouldn't be an issue until after it's run.
       // Test for multiple blogEntries on a single date, multiple dates, etc.  Check log output too.
     }
+    const clonedBlogEntry = templateBlog.cloneNode(true);
+    clonedBlogEntry.style.display = 'block';
   }
   editEntry = () => {}
   deleteEntry = (arrayIndex) => {
-    this.blogList.splice(arrayIndex, 1);
+    this.blogList.splice(arrayIndex, 1); // correction, this must rely on unique date/log -based ID.
+    // After all, if an element is removed in the middle then all the old IDs are going to be out of date.
+    // Switching to a "display one element remove one element" instead of full render of list each time
+    // means that index numbers CAN be duplicated
+    
   }
   findLastIndexAndInsertIndex = (dateString, arrayInput = this.blogList) => {
     let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex = -1 if not found.
@@ -54,19 +60,19 @@ const BlogLog = class {
     }
     return [returnIndex, startIndex];
   }
-  // functions add render, switch render with edit, delete render then nth-child takes over.
-  // The data functions are already handled.
-  // Should the changing of renders be considered separate functions?
-  // . . . no, because they're never called independently.
+
   displayBlogList = (htmlElement) => {
     const clonedBlogEntry = templateBlog.cloneNode(true);
     clonedBlogEntry.style.display = 'block';
 
     //Clone.  Assign datasetId based on array index, to pass to deleteEntry.
+    // Remember, data array is most recent last, but render is most recent first.
+    // slower to unshift than push, I think, as all existing array references have to be updated.  Maybe.
+    // at any rate, just reverse the for loop on render.
   }
 }
 
-const addListenerToHTMLElement = (htmlElement, errorMessage, htmlElementOutput) => {
+const addValueMissingListenerToHTMLElement = (htmlElement, errorMessage, htmlElementOutput) => {
   htmlElement.addEventListener('input', (event) => {
     if (htmlElement.validity.valueMissing) {
       htmlElement.setCustomValidity(`${errorMessage}`)
@@ -77,9 +83,8 @@ const addListenerToHTMLElement = (htmlElement, errorMessage, htmlElementOutput) 
   });
 }
 
-addListenerToHTMLElement(inputBlogTitle, 'Please enter a blog title', inputBlogTitleError);
-addListenerToHTMLElement(inputBlogContent, 'Please enter blog content', inputBlogContentError);
-
+addValueMissingListenerToHTMLElement(inputBlogTitle, 'Please enter a blog title', inputBlogTitleError);
+addValueMissingListenerToHTMLElement(inputBlogContent, 'Please enter blog content', inputBlogContentError);
 
 formEnterBlog.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -92,24 +97,18 @@ formEnterBlog.addEventListener('submit', (event) => {
 
 });
 
+// Top of page is submit blog entry with validation methods.
+// Submitting prepends or whatever blog to first element of list in html as it's reverse chronological order
+// and the user has no ability to edit date of blog entry.  A hidden unique ID is assigned based on hidden date
+//  and hidden log number.  This ID is referenced when adding or removing logs.  It CANNOT be index.
+// Removing a blog entry sends a reference to delete the data from the array, and just removes the current element.
+// Editing a blog entry switches visibility. I don't know that it's really cheaper computationally to
+// render an invisible form and switch visibility.  But whatever.
 
-// onSubmit sends form data to array of objects.
-// edit or remove does . . . well, let's see about assigning dataset ids or something.
-// How do we ensure that dataset ids are unique?  Set on date, but also . . . 
-// Let's say that we have a date entry as well that is default set to current date.
-// When an entry is made, looks through database for all dates binary search, finds first and last, so knows
-// how many entries exist for that date. Then assigns ID of index.
-// If no entry found for that date, then no ID.
-
-// Suppose I input a date and a bunch of logs for that date.  Then I delete one of the logs in the middle.
-// How do I maintain . . . well, I just find the last index with that date, get its log number, then add 1.
-
+// To do;  Look up exactly how dataset works.
 
 // Stick in something to jump navigation from current blog to form input to back.
-// Or would it be better to hide the existing element and reveal the current form?
-// Well, hiding creates 2-3 times the element (for form and add).
-// So how many times will they really use that?
-// When specifically do I render? If I edit an element, I don't need to do much, just .replace
+
 // If I *delete* an element then I need to . . . re-render the whole list?  Maybe I just delete from data
 // and delete the element, and leave it at that. CSS styling handles change in look.
 // Well really, do I even need to render the whole list at all?  I have to populate the list on initialization,
