@@ -17,3 +17,6 @@ https://developer.mozilla.org/en-US/docs/Web/API/Node/parentElement
 https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
 https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset
+https://www.w3schools.com/js/js_object_accessors.asp
+https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
+https://www.w3schools.com/jsref/met_document_createdocumentfragment.asp

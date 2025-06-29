@@ -29,6 +29,7 @@ const BlogLog = class {
   }
   moveLocalStorageDataIntoBlogLog = (arrayLog) => {
     this.blogList = arrayLog;
+    console.log(`Testing first element; ${this.blogList[0].blogEntry.title}, ${this.blogList[0].blogEntry.content}, ${this.blogList[0].blogEntry.dateString}, ${this.blogList[0].logNumber}`);
   }
   storeDataInLocalStorage = () => {
     localStorage.setItem("mod5sba", JSON.stringify(this.blogList));
@@ -70,7 +71,11 @@ const BlogLog = class {
     //console.log(`aEL post localStorage; ${JSON.stringify(this)}`)
   }
   editEntry = (dateString, logNumber, newTitle, newContent) => {
+    console.log(`editEntry triggered with ${dateString}, ${logNumber}, ${newTitle}, ${newContent} `)
     const arrayIndex = this.findIndex(dateString, logNumber);
+//    console.log(`editEntry attempting to read index ${arrayIndex}`);
+    // arrayIndex is returning -1.  This should be impossible.
+//    console.log(`editEntry attempting to read element ${JSON.stringify(this.blogList[arrayIndex])}`);
     this.blogList[arrayIndex].blogEntry.title = newTitle;
     this.blogList[arrayIndex].blogEntry.content = newContent;
     this.storeDataInLocalStorage();
@@ -98,29 +103,62 @@ const BlogLog = class {
     return [returnIndex, startIndex];
   }
   findIndex = (dateString, logNumber, arrayInput = this.blogList) => {
+    console.log (`findIndex triggered.  dateString ${dateString}, logNumber ${logNumber}`);
     logNumber = Number(logNumber);
     let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex -1 if not found.  But that should never happen as this is only intended to be invoked on an existing element.
     // Also, dateString and logNumber together should constitute a unique identifier.
     while (startIndex <= endIndex) {
+      console.log(`findIndex startIndex ${startIndex}, endIndex ${endIndex}`)
       let midIndex = Math.floor((startIndex + endIndex) / 2);
-      if (dateString === arrayInput[midIndex].blogEntry.dateString && Number(arrayInput[midIndex].logNumber) === logNumber) {
+      if (dateString === arrayInput[midIndex].blogEntry.dateString && (Number(arrayInput[midIndex].logNumber) === Number(logNumber))) {
         returnIndex = midIndex;
-      } else if (dateString < arrayInput[midIndex].blogEntry.dateString || (dateString <= arrayInput[midIndex].blogEntry.dateString && Number(arrayInput[midIndex].logNumber)) < logNumber) {
-        endIndex = midIndex + 1;
+        console.log(`findIndex matched with index ${returnIndex}`);
+        return returnIndex;
+      } else if (dateString < arrayInput[midIndex].blogEntry.dateString || (dateString === arrayInput[midIndex].blogEntry.dateString && (Number(logNumber) < Number(arrayInput[midIndex].logNumber)))) {
+        endIndex = midIndex - 1;
+        console.log(`findIndex lessThan, startIndex ${startIndex}, endIndex ${endIndex}`);
       } else {
         startIndex = midIndex + 1;
+        console.log(`findIndex moreThan, startIndex ${startIndex}, endIndex ${endIndex}`);
       }
-      return returnIndex;
     } 
+    console.log(`findIndex returning ${returnIndex}`);
+    return returnIndex;
   }
 
-  displayBlogList = (htmlElement) => {
-    console.log(`displayBlogList with ${JSON.stringify(this.blogList)}`);
+  displayBlogList = () => {
+    for (let i = 0; i < this.blogList.length; i++) {
+      console.log(`dBL, item ${i}, ${JSON.stringify(this.blogList[i])}`);
+    }
+    // console.log(`displayBlogList with ${JSON.stringify(this.blogList)}`);
 
-    //Clone.  Assign datasetId based on array index, to pass to deleteEntry.
-    // Remember, data array is most recent last, but render is most recent first.
-    // slower to unshift than push, I think, as all existing array references have to be updated.  Maybe.
-    // at any rate, just reverse the for loop on render.
+    const fragment = document.createDocumentFragment();
+
+    for (let i = this.blogList.length - 1; i >= 0; i--) {
+      const clonedBlogEntry = templateBlog.cloneNode(true);
+      clonedBlogEntry.dataset.id=`${this.blogList[i].blogEntry.dateString}-${this.blogList[i].logNumber}`;
+      // in HTML, data-id="1" is manifestation of javascript htmlElement.dataset.id="3";
+      const clonedBlogSection = clonedBlogEntry.children[0]; // hardcoding a index 0 reference is not dynamic.
+      const cBSTitle = clonedBlogSection.children[0];
+      const cBSContent = clonedBlogSection.children[1];
+
+      cBSTitle.textContent = this.blogList[i].blogEntry.title;
+      cBSContent.textContent = this.blogList[i].blogEntry.content;
+
+      clonedBlogSection.style.display = 'block';
+      fragment.appendChild(clonedBlogEntry);
+    }
+    container.insertBefore(fragment, container.children[2])
+    // Test to see if this fragment disrupts any functionality - children references and such may break.  Just CRUD will do.
+    // Note:  I think it breaks because I'm not attaching listeners.
+
+    /**
+     * script.js:74 Uncaught TypeError: Cannot read properties of undefined (reading 'blogEntry')
+    at BlogLog.editEntry (script.js:74:31)
+    at HTMLFormElement.<anonymous> (script.js:202:15)
+editEntry	@	script.js:74
+(anonymous)	@	script.js:202
+     */
   }
 }
 
@@ -209,6 +247,8 @@ const retrieveData = () => {
   if (blogLogStored) {
     //console.log(`Attempting retrieve data on existing data, ${JSON.stringify(blogLogStored)}`);
     blogLog.moveLocalStorageDataIntoBlogLog(blogLogStored);
+    console.log(`retrieveData test ${blogLogStored}`);
+    blogLog.displayBlogList();
   }
 }
 
