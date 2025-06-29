@@ -138,8 +138,7 @@ container.addEventListener('click', (event) => {
     const targetId = blogContainer.dataset.id;
     const dateString = targetId.slice(0, 10);
     const logNumber = targetId.slice(11);
-    console.log(`caEL triggered.  ${dateString}, ${logNumber}`); // logNumber is a string; this is not working correctly.
-    // button to section, section to containing div;
+    //console.log(`caEL triggered.  ${dateString}, ${logNumber}`);
     blogLog.deleteEntry(dateString, logNumber, blogContainer);
   }
   if (event.target.classList.contains('button-edit-blog')) {
@@ -166,61 +165,21 @@ container.addEventListener('click', (event) => {
     addValueMissingListenerToHTMLElement(formContent, 'Please enter a blog title', formContentError);
     formEdit.addEventListener('submit', (event) => {
       event.preventDefault();
-      console.log(`fbAEL triggered.`)
+      //console.log(`fbAEL triggered.`)
       blogLog.editEntry(dateString, logNumber, formTitle.value, formContent.value);
       blogTitle.textContent = formTitle.value;
       blogContent.textContent = formContent.value;
-      console.log(`fbAEL populated with ${blogTitle.textContent}, ${blogContent.textContent}`);
+      //console.log(`fbAEL populated with ${blogTitle.textContent}, ${blogContent.textContent}`);
       blogSection.style.display = 'block';
       formSection.style.display = 'none';
     });
+    // formEdit.addEventListener('submit' ...)
   }
-  /**
-<div id="template-blog">
-    <section style="display: none;" class="blog-entry">
-      <h2></h2>
-      <p></p>
-      <button class="button-edit-blog">Edit</button>
-      <button class="button-delete-blog">Delete</button>
-    </section>
-    <section style="display: none;" class="blog-edit">
-      <form>
-        <label>Post Title</label>
-        <br>
-        <input type="text" required>
-        <br>
-        <span></span>
-        <br>
-        <label>Post Content</label>
-        <br>
-        <textarea rows="5" cols="66" placeholder="Click and drag lower right corner to resize."></textarea>
-        <br>
-        <span></span>
-        <br>
-        <button class="button-submit-edit-blog">Submit Blog Entry</button>
-      </form>
-    </section>
-  </div>
-    blogSection.style.display = 'none';
-    formSection.style.display = 'block';
-
-   */
 });
 // container.addEventListener('click' ...)
 
-// Top of page is submit blog entry with validation methods.
-// Submitting prepends or whatever blog to first element of list in html as it's reverse chronological order
-// and the user has no ability to edit date of blog entry.  A hidden unique ID is assigned based on hidden date
-//  and hidden log number.  This ID is referenced when adding or removing logs.  It CANNOT be index.
-// Removing a blog entry sends a reference to delete the data from the array, and just removes the current element.
-// Editing a blog entry switches visibility. I don't know that it's really cheaper computationally to
-// render an invisible form and switch visibility.  But whatever.
-
-// To do;  Look up exactly how dataset works.
-
 // Stick in something to jump navigation from current blog to form input to back.
 
-// If I *delete* an element then I need to . . . re-render the whole list?  Maybe I just delete from data
-// and delete the element, and leave it at that. CSS styling handles change in look.
-// Well really, do I even need to render the whole list at all?  I have to populate the list on initialization,
-// sure.  
+// Store data in localStorage.
+// Add button to wipe SPECIFICALLY the set data in localStorage.
+// retrieve data on load.  
