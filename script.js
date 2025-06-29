@@ -108,6 +108,7 @@ const addValueMissingListenerToHTMLElement = (htmlElement, errorMessage, htmlEle
     } else {
       htmlElement.setCustomValidity(``);
     }
+    htmlElementOutput.classList.add("error-message");
     htmlElementOutput.textContent = htmlElement.validationMessage;
   });
 }
@@ -140,24 +141,22 @@ container.addEventListener('click', (event) => {
   if (event.target.classList.contains('button-edit-blog')) {
     // querySelector also vulnerable to document changes, though perhaps less so.
     const blogContainer = event.target.parentElement.parentElement;
-
     const blogSection = event.target.parentElement;
     const formSection = blogContainer.children[1];
     const formEdit = formSection.children[0];
-
     const blogTitle = blogSection.children[0].textContent;
     const blogContent = blogSection.children[1].textContent;
-
     const formTitle = formEdit.children[2];
     const formTitleError = formEdit.children[4];
     const formContent = formEdit.children[8];
     const formContentError = formEdit.children[10];
     const formButton = formEdit.children[12];
-
     formTitle.value= blogTitle;
     formContent.value = blogContent;
     blogSection.style.display = 'none';
     formSection.style.display = 'block';
+    addValueMissingListenerToHTMLElement(formTitle, 'Please enter a blog title', formTitleError);
+    addValueMissingListenerToHTMLElement(formContent, 'Please enter a blog title', formContentError);
   }
   /**
 <div id="template-blog">
