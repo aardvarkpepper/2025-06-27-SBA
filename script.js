@@ -49,7 +49,7 @@ const BlogLog = class {
       this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: logNumber})
     } else {
       logNumber = `${(this.blogList[indexArray[0]].logNumber) + 1}` // also casts into string.
-      console.log(`aeElse, with ${JSON.stringify(indexArray)} logNumber ${(this.blogList[indexArray[0]].logNumber) + 1}`);
+      //console.log(`aeElse, with ${JSON.stringify(indexArray)} logNumber ${(this.blogList[indexArray[0]].logNumber) + 1}`);
       this.blogList.splice(indexArray[1], 0, {blogEntry: blogEntry, logNumber: (this.blogList[indexArray[0]].logNumber) + 1})
       // If this is weird, try storing indexArray[1].logNumber.  .splice shouldn't be an issue until after it's run.
       // Test for multiple blogEntries on a single date, multiple dates, etc.  Check log output too.
@@ -67,7 +67,7 @@ const BlogLog = class {
     clonedBlogSection.style.display = 'block';
     container.insertBefore(clonedBlogEntry, container.children[2]); // again, hardcoding reference.
     this.storeDataInLocalStorage();
-    console.log(`aEL post localStorage; ${JSON.stringify(this)}`)
+    //console.log(`aEL post localStorage; ${JSON.stringify(this)}`)
   }
   editEntry = (dateString, logNumber, newTitle, newContent) => {
     const arrayIndex = this.findIndex(dateString, logNumber);
@@ -76,7 +76,7 @@ const BlogLog = class {
     this.storeDataInLocalStorage();
   } 
   deleteEntry = (dateString, logNumber, htmlElement) => {
-    console.log(`dE with ${dateString}, ${logNumber}`);
+    //console.log(`dE with ${dateString}, ${logNumber}`);
     const arrayIndex = this.findIndex(dateString, logNumber);
     this.blogList.splice(arrayIndex, 1);
     htmlElement.remove();
@@ -207,7 +207,7 @@ const retrieveData = () => {
     blogLogStored = null;
   }
   if (blogLogStored) {
-    console.log(`Attempting retrieve data on existing data, ${JSON.stringify(blogLogStored)}`);
+    //console.log(`Attempting retrieve data on existing data, ${JSON.stringify(blogLogStored)}`);
     blogLog.moveLocalStorageDataIntoBlogLog(blogLogStored);
   }
 }
