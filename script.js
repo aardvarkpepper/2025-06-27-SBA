@@ -6,6 +6,15 @@ const inputBlogTitleError = document.getElementById('input-blog-title-error');
 const inputBlogContent = document.getElementById('input-blog-content');
 const inputBlogContentError = document.getElementById('input-blog-content-error');
 
+const clearLocalStorage = document.getElementById('button-clear-localstorage')
+
+clearLocalStorage.addEventListener('click', (event) => {
+  // Note:  Clearing localStorage then adding a new entry results in existing log data being saved when new entry is entered.  To wipe localStorage and current data, clear then refresh page.  Then works.
+  localStorage.removeItem("mod5sba");
+})
+
+let blogLogStored = null;
+
 const BlogEntry = class {
   constructor(title, content, dateString = new Date().toISOString().slice(0, 10)) {
     this.title = title;
@@ -17,6 +26,12 @@ const BlogEntry = class {
 const BlogLog = class {
   constructor(arrayLog = []) {
     this.blogList = arrayLog;
+  }
+  moveLocalStorageDataIntoBlogLog = (arrayLog) => {
+    this.blogList = arrayLog;
+  }
+  storeDataInLocalStorage = () => {
+    localStorage.setItem("mod5sba", JSON.stringify(this.blogList));
   }
   /**
    * @param BlogEntry instance, blogEntry 
@@ -50,19 +65,22 @@ const BlogLog = class {
     cBSContent.textContent = blogEntry.content;
 
     clonedBlogSection.style.display = 'block';
-
     container.insertBefore(clonedBlogEntry, container.children[2]); // again, hardcoding reference.
+    this.storeDataInLocalStorage();
+    console.log(`aEL post localStorage; ${JSON.stringify(this)}`)
   }
   editEntry = (dateString, logNumber, newTitle, newContent) => {
     const arrayIndex = this.findIndex(dateString, logNumber);
     this.blogList[arrayIndex].blogEntry.title = newTitle;
     this.blogList[arrayIndex].blogEntry.content = newContent;
+    this.storeDataInLocalStorage();
   } 
   deleteEntry = (dateString, logNumber, htmlElement) => {
     console.log(`dE with ${dateString}, ${logNumber}`);
     const arrayIndex = this.findIndex(dateString, logNumber);
     this.blogList.splice(arrayIndex, 1);
     htmlElement.remove();
+    this.storeDataInLocalStorage();
   }
   findLastIndexAndInsertIndex = (dateString, arrayInput = this.blogList) => {
     let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex = -1 if not found.
@@ -97,6 +115,7 @@ const BlogLog = class {
   }
 
   displayBlogList = (htmlElement) => {
+    console.log(`displayBlogList with ${JSON.stringify(this.blogList)}`);
 
     //Clone.  Assign datasetId based on array index, to pass to deleteEntry.
     // Remember, data array is most recent last, but render is most recent first.
@@ -120,7 +139,7 @@ const addValueMissingListenerToHTMLElement = (htmlElement, errorMessage, htmlEle
 addValueMissingListenerToHTMLElement(inputBlogTitle, 'Please enter a blog title', inputBlogTitleError);
 addValueMissingListenerToHTMLElement(inputBlogContent, 'Please enter blog content', inputBlogContentError);
 
-const blogLog = new BlogLog();
+let blogLog = new BlogLog();
 
 formEnterBlog.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -180,6 +199,19 @@ container.addEventListener('click', (event) => {
 
 // Stick in something to jump navigation from current blog to form input to back.
 
-// Store data in localStorage.
-// Add button to wipe SPECIFICALLY the set data in localStorage.
-// retrieve data on load.  
+const retrieveData = () => {
+  try {
+    blogLogStored = JSON.parse(localStorage.getItem('mod5sba'));
+  } catch (errorMessage) {
+    console.error('Error parsing settings from localStorage', errorMessage);
+    blogLogStored = null;
+  }
+  if (blogLogStored) {
+    console.log(`Attempting retrieve data on existing data, ${JSON.stringify(blogLogStored)}`);
+    blogLog.moveLocalStorageDataIntoBlogLog(blogLogStored);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  retrieveData();
+})
