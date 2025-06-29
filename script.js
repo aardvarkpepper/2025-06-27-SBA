@@ -53,7 +53,11 @@ const BlogLog = class {
 
     container.insertBefore(clonedBlogEntry, container.children[2]); // again, hardcoding reference.
   }
-  editEntry = () => {} // 
+  editEntry = (dateString, logNumber, newTitle, newContent) => {
+    const arrayIndex = this.findIndex(dateString, logNumber);
+    this.blogList[arrayIndex].blogEntry.title = newTitle;
+    this.blogList[arrayIndex].blogEntry.content = newContent;
+  } 
   deleteEntry = (dateString, logNumber, htmlElement) => {
     console.log(`dE with ${dateString}, ${logNumber}`);
     const arrayIndex = this.findIndex(dateString, logNumber);
@@ -141,22 +145,35 @@ container.addEventListener('click', (event) => {
   if (event.target.classList.contains('button-edit-blog')) {
     // querySelector also vulnerable to document changes, though perhaps less so.
     const blogContainer = event.target.parentElement.parentElement;
+    const targetId = blogContainer.dataset.id;
+    const dateString = targetId.slice(0, 10);
+    const logNumber = targetId.slice(11);
     const blogSection = event.target.parentElement;
     const formSection = blogContainer.children[1];
     const formEdit = formSection.children[0];
-    const blogTitle = blogSection.children[0].textContent;
-    const blogContent = blogSection.children[1].textContent;
+    const blogTitle = blogSection.children[0];
+    const blogContent = blogSection.children[1];
     const formTitle = formEdit.children[2];
     const formTitleError = formEdit.children[4];
     const formContent = formEdit.children[8];
     const formContentError = formEdit.children[10];
     const formButton = formEdit.children[12];
-    formTitle.value= blogTitle;
-    formContent.value = blogContent;
+    formTitle.value= blogTitle.textContent;
+    formContent.value = blogContent.textContent;
     blogSection.style.display = 'none';
     formSection.style.display = 'block';
     addValueMissingListenerToHTMLElement(formTitle, 'Please enter a blog title', formTitleError);
     addValueMissingListenerToHTMLElement(formContent, 'Please enter a blog title', formContentError);
+    formEdit.addEventListener('submit', (event) => {
+      event.preventDefault();
+      console.log(`fbAEL triggered.`)
+      blogLog.editEntry(dateString, logNumber, formTitle.value, formContent.value);
+      blogTitle.textContent = formTitle.value;
+      blogContent.textContent = formContent.value;
+      console.log(`fbAEL populated with ${blogTitle.textContent}, ${blogContent.textContent}`);
+      blogSection.style.display = 'block';
+      formSection.style.display = 'none';
+    });
   }
   /**
 <div id="template-blog">
