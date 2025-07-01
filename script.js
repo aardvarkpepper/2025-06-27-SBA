@@ -29,7 +29,7 @@ const BlogLog = class {
   }
   moveLocalStorageDataIntoBlogLog = (arrayLog) => {
     this.blogList = arrayLog;
-    console.log(`Testing first element; ${this.blogList[0].blogEntry.title}, ${this.blogList[0].blogEntry.content}, ${this.blogList[0].blogEntry.dateString}, ${this.blogList[0].logNumber}`);
+    //console.log(`Testing first element; ${this.blogList[0].blogEntry.title}, ${this.blogList[0].blogEntry.content}, ${this.blogList[0].blogEntry.dateString}, ${this.blogList[0].logNumber}`);
   }
   storeDataInLocalStorage = () => {
     localStorage.setItem("mod5sba", JSON.stringify(this.blogList));
@@ -71,7 +71,7 @@ const BlogLog = class {
     //console.log(`aEL post localStorage; ${JSON.stringify(this)}`)
   }
   editEntry = (dateString, logNumber, newTitle, newContent) => {
-    console.log(`editEntry triggered with ${dateString}, ${logNumber}, ${newTitle}, ${newContent} `)
+    //console.log(`editEntry triggered with ${dateString}, ${logNumber}, ${newTitle}, ${newContent} `)
     const arrayIndex = this.findIndex(dateString, logNumber);
 //    console.log(`editEntry attempting to read index ${arrayIndex}`);
     // arrayIndex is returning -1.  This should be impossible.
@@ -103,32 +103,32 @@ const BlogLog = class {
     return [returnIndex, startIndex];
   }
   findIndex = (dateString, logNumber, arrayInput = this.blogList) => {
-    console.log (`findIndex triggered.  dateString ${dateString}, logNumber ${logNumber}`);
+    //console.log (`findIndex triggered.  dateString ${dateString}, logNumber ${logNumber}`);
     logNumber = Number(logNumber);
     let returnIndex = -1, startIndex = 0, endIndex = arrayInput.length - 1; // returnIndex -1 if not found.  But that should never happen as this is only intended to be invoked on an existing element.
     // Also, dateString and logNumber together should constitute a unique identifier.
     while (startIndex <= endIndex) {
-      console.log(`findIndex startIndex ${startIndex}, endIndex ${endIndex}`)
+      //console.log(`findIndex startIndex ${startIndex}, endIndex ${endIndex}`)
       let midIndex = Math.floor((startIndex + endIndex) / 2);
       if (dateString === arrayInput[midIndex].blogEntry.dateString && (Number(arrayInput[midIndex].logNumber) === Number(logNumber))) {
         returnIndex = midIndex;
-        console.log(`findIndex matched with index ${returnIndex}`);
+        //console.log(`findIndex matched with index ${returnIndex}`);
         return returnIndex;
       } else if (dateString < arrayInput[midIndex].blogEntry.dateString || (dateString === arrayInput[midIndex].blogEntry.dateString && (Number(logNumber) < Number(arrayInput[midIndex].logNumber)))) {
         endIndex = midIndex - 1;
-        console.log(`findIndex lessThan, startIndex ${startIndex}, endIndex ${endIndex}`);
+        //console.log(`findIndex lessThan, startIndex ${startIndex}, endIndex ${endIndex}`);
       } else {
         startIndex = midIndex + 1;
-        console.log(`findIndex moreThan, startIndex ${startIndex}, endIndex ${endIndex}`);
+        //console.log(`findIndex moreThan, startIndex ${startIndex}, endIndex ${endIndex}`);
       }
     } 
-    console.log(`findIndex returning ${returnIndex}`);
+    //console.log(`findIndex returning ${returnIndex}`);
     return returnIndex;
   }
 
   displayBlogList = () => {
     for (let i = 0; i < this.blogList.length; i++) {
-      console.log(`dBL, item ${i}, ${JSON.stringify(this.blogList[i])}`);
+      //console.log(`dBL, item ${i}, ${JSON.stringify(this.blogList[i])}`);
     }
     // console.log(`displayBlogList with ${JSON.stringify(this.blogList)}`);
 
@@ -164,7 +164,9 @@ editEntry	@	script.js:74
 
 const addValueMissingListenerToHTMLElement = (htmlElement, errorMessage, htmlElementOutput) => {
   htmlElement.addEventListener('input', (event) => {
+    //console.log(`Triggering aVMLTHE on ${htmlElement}; input change detected; current value '${htmlElement.value}'`);
     if (htmlElement.validity.valueMissing) {
+      //console.log(`Error message should trigger on ${htmlElement}, current value ${htmlElement.value}`);
       htmlElement.setCustomValidity(`${errorMessage}`)
     } else {
       htmlElement.setCustomValidity(``);
@@ -174,8 +176,8 @@ const addValueMissingListenerToHTMLElement = (htmlElement, errorMessage, htmlEle
   });
 }
 
-addValueMissingListenerToHTMLElement(inputBlogTitle, 'Please enter a blog title', inputBlogTitleError);
-addValueMissingListenerToHTMLElement(inputBlogContent, 'Please enter blog content', inputBlogContentError);
+addValueMissingListenerToHTMLElement(inputBlogTitle, '**Please enter a blog title**', inputBlogTitleError);
+addValueMissingListenerToHTMLElement(inputBlogContent, '**Please enter blog content**', inputBlogContentError);
 
 let blogLog = new BlogLog();
 
@@ -213,14 +215,15 @@ container.addEventListener('click', (event) => {
     const formTitleError = formEdit.children[4];
     const formContent = formEdit.children[8];
     const formContentError = formEdit.children[10];
-    const formButton = formEdit.children[12];
     formTitle.value= blogTitle.textContent;
     formContent.value = blogContent.textContent;
     blogSection.style.display = 'none';
     formSection.style.display = 'block';
-    addValueMissingListenerToHTMLElement(formTitle, 'Please enter a blog title', formTitleError);
-    addValueMissingListenerToHTMLElement(formContent, 'Please enter a blog title', formContentError);
-    formEdit.addEventListener('submit', (event) => {
+    addValueMissingListenerToHTMLElement(formTitle, '**Please enter a blog title**', formTitleError);
+    addValueMissingListenerToHTMLElement(formContent, '**Please enter a blog title**', formContentError);
+    // console.log(`Currently referencing formContent value ${formContent.value}`);
+    // formContentError.textContent = "Triggered";
+      formEdit.addEventListener('submit', (event) => {
       event.preventDefault();
       //console.log(`fbAEL triggered.`)
       blogLog.editEntry(dateString, logNumber, formTitle.value, formContent.value);
@@ -247,7 +250,7 @@ const retrieveData = () => {
   if (blogLogStored) {
     //console.log(`Attempting retrieve data on existing data, ${JSON.stringify(blogLogStored)}`);
     blogLog.moveLocalStorageDataIntoBlogLog(blogLogStored);
-    console.log(`retrieveData test ${blogLogStored}`);
+    //console.log(`retrieveData test ${blogLogStored}`);
     blogLog.displayBlogList();
   }
 }

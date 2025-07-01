@@ -1,8 +1,85 @@
-.error-message {
-  color: red;
+body {
+  background-color: darkslateblue;
+  color: lightyellow;
+  font-family: 'Barlow Semi Condensed', sans-serif;
 }
 
+h1 {
+  font-size: 2.5rem;
+}
+
+.error-message {
+  color: pink;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+button.button {
+  color: lightskyblue;
+  box-shadow: 3px 3px gray;
+}
+
+button:active {
+  box-shadow: 0px 0px;
+  transform: translate(3px, 3px);
+}
+
+button:hover {
+  background-color: lightblue;
+}
+
+input, textarea {
+  margin-top: 8px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input:invalid, textarea:invalid {
+  border: dashed 2px red;
+}
+
+input:valid, textarea:valid {
+  border: dashed 2px green;
+}
+
+div {
+  border: solid 1px black;
+  border-radius: 8px;
+  margin: 8px;
+}
+
+div:nth-child(odd) {
+  background-color:  darkolivegreen;
+}
+
+div:nth-child(even) {
+  background-color: darkslategray;
+}
+
+h2 {
+  text-decoration: underline;
+  font-size: 2rem;
+  text-shadow:
+  1px 1px 0 black,
+  -1px 1px 0 black,
+  -1px -1px 0 black,
+  1px -1px 0 black;
+}
+
+button {
+  margin: 4px;
+  background-color: #111111;
+  color: lightyellow;
+  padding: 4px 14px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+}
+
+
 /**
+Note:  Red and green are not universally recognized.
 Style the Application (styles.css):
 Apply basic styling to make the application clean, readable, and user-friendly.
 Style the form, input fields, buttons, and the display area for posts.
