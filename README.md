@@ -1,5 +1,9 @@
 ![Cat Writing Blog Entry](./personalLog2.png)
 
+## Netlify Deploy
+
+http://quiet-hotteok-36a5a4.netlify.app/
+
 ## Reflection
 
 The project is Create / Read / Update / Delete on form entries, using HTML, CSS, and Javascript.  Included are form validation through the Constraint Validation API, form processing through addEventListener using 'submit' and event.preventDefault on forms, event delegation to cut down on separate eventListeners, assigning unique characterstics to HTML so data can identify HTML, getting and setting data in localStorage, and loading data on page load or page refresh.  Also, operations on the Date object, Javascript classes, binary searches, cloning, changing display type to hide or reveal elements, casting strings to numbers for comparison, structuring around DOM references including .children, createDocumentFragment, appendChild, insertBefore, using methods for Don't Repeat Yourself (DRY) coding.  Optional utility functions used; I tend to stick everything in utility functions anyways. Used Google Fonts, CSS styling for validity indication, button hover indicator, button press animation.
